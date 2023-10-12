@@ -3,13 +3,13 @@ package model.entity;
 public class Letter {
 
     // --------------------- Буква -----------------------
-    private char character;
+    private final char character;
 
-    public void setChar(char letter) {
-        this.character = letter;
+    public Letter(char ch){
+        this.character = ch;
     }
 
-    public char letter(){
+    public char character(){
         return this.character;
     }
 

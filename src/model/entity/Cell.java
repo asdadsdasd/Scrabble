@@ -3,10 +3,14 @@ package model.entity;
 import java.awt.*;
 
 public class Cell {
-    private Point coordinates;
+    private final Point coordinates;
 
-    void setPosition(Point pos){
-        coordinates = pos;
+//    void setPosition(Point pos){
+//        coordinates = pos;
+//    }
+
+    public Cell(Point coordinates){
+        this.coordinates = coordinates;
     }
 
     public Point position(){

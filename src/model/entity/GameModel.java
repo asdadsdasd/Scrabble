@@ -4,6 +4,7 @@ import model.events.GameEvent;
 import model.events.GameListener;
 import model.events.PlayerActionEvent;
 import model.events.PlayerActionListener;
+import model.factory.CellFactory;
 import model.factory.LetterFactory;
 
 import java.awt.*;
@@ -47,12 +48,14 @@ public class GameModel {
 
     // ---------------------- Порождение обстановки на поле ---------------------
 
+    private CellFactory cellFactory = new CellFactory();
+
     private void generateField(){
 
         field().clear();
-        for(int row = 1; row <= this.field().height(); row++) {
-            for(int col = 1; col <= this.field().width(); col++) {
-                field().setCell(new Point(col, row), new Cell());
+        for(int row = 0; row < this.field().height(); row++) {
+            for(int col = 0; col < this.field().width(); col++) {
+                field().setCell(cellFactory.createCell(new Point(col, row)));
             }
         }
     }
@@ -85,8 +88,8 @@ public class GameModel {
 
     private void setMainWord() {
         String word = Dictionary.getRandomWord(field().width());
-        for (int i = 1; i <= field().width(); i++){
-            field().setLetter(new Point(i, field().height()/2 + 1), letterFactory.createLetter(word.charAt(i - 1)));
+        for (int i = 0; i < field().width(); i++){
+            field().setLetter(new Point(i, field().height()/2), letterFactory.createLetter(word.charAt(i)));
         }
     }
     public void setLetterToActivePlayer(char ch){

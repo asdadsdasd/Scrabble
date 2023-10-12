@@ -3,19 +3,15 @@ package model.view;
 import model.entity.Cell;
 import model.entity.Dictionary;
 import model.entity.GameModel;
-import model.entity.Letter;
 import model.events.GameEvent;
 import model.events.GameListener;
 import model.events.PlayerActionEvent;
 import model.events.PlayerActionListener;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -152,8 +148,8 @@ public class GamePanel extends JFrame {
 
         fieldPanel.removeAll();
 
-        for (int row = 1; row <= model.field().height(); row++) {
-            for (int col = 1; col <= model.field().width(); col++) {
+        for (int row = 0; row < model.field().height(); row++) {
+            for (int col = 0; col < model.field().width(); col++) {
                 JButton button = new JButton("");
                 button.setFocusable(false);
                 fieldPanel.add(button);
@@ -176,11 +172,11 @@ public class GamePanel extends JFrame {
         }
 
         int fieldWidth = model.field().width();
-        return new Point(index%fieldWidth+1, index/fieldWidth+1);
+        return new Point(index%fieldWidth, index/fieldWidth);
     }
 
     private JButton getButton(Point pos){
-        int index = model.field().width()*(pos.y-1) + (pos.x-1);
+        int index = model.field().width()*(pos.y) + (pos.x);
 
         for (Component widget : fieldPanel.getComponents()){
             if(widget instanceof JButton){
@@ -221,14 +217,14 @@ public class GamePanel extends JFrame {
         for (Cell c : model.field().cells()){
             if(c.letter() != null){
                 JButton btn = getButton(c.position());
-                btn.setText(String.valueOf(c.letter().letter()));
+                btn.setText(String.valueOf(c.letter().character()));
                 btn.revalidate();
-                btn.repaint();
+                //btn.repaint();
             }else {
                 JButton btn = getButton(c.position());
                 btn.setText("");
                 btn.revalidate();
-                btn.repaint();
+                //btn.repaint();
             }
         }
     }

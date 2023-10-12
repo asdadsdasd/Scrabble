@@ -14,7 +14,7 @@ public class GameField {
         return Collections.unmodifiableList(cellList);
     }
 
-    Cell cell(Point pos){
+    public Cell cell(Point pos){
 
         for(Cell obj : cellList)
         {
@@ -25,14 +25,14 @@ public class GameField {
         return null;
     }
 
-    void setCell(Point pos, Cell cell){
+    void setCell(Cell cell){
         // Удаляем старую ячейку
-        removeCell(pos);
+        removeCell(cell.position());
 
         // Связываем ячейку с полем
         cell.setField(this);
-        cell.setPosition(pos);
-
+        //cell.setPosition(pos);
+//todo
         // Добавляем новую ячейку
         cellList.add(cell);
     }
@@ -136,10 +136,14 @@ public class GameField {
         this.height = height;
 
         // Удаляем все ячейки находящиеся вне поля
+        ArrayList<Cell> removableList = new ArrayList<>();
         for (Cell obj : cellList) {
-            if(!containsRange(obj.position()) ) {
-                cellList.remove(obj);
+            if(!containsRange(obj.position())) {
+                removableList.add(obj);
             }
+        }
+        for (Cell c : removableList) {
+            cellList.remove(c);
         }
     }
 
@@ -152,7 +156,7 @@ public class GameField {
     }
 
     public boolean containsRange(Point p){
-        return p.getX() >= 1 && p.getX() <= width &&
-                p.getY() >= 1 && p.getY() <= height;
+        return p.getX() >= 0 && p.getX() < width &&
+                p.getY() >= 0 && p.getY() < height;
     }
 }

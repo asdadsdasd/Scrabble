@@ -6,8 +6,6 @@ import model.events.PlayerActionListener;
 import java.awt.*;
 import java.lang.module.FindException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class Player {
     // --------------------------------- Поля связанные с игроком -------------------------------
@@ -92,7 +90,7 @@ public class Player {
         if(chosenLetter == null) throw new FindException("В выбранной клетке нет буквы!");
 
         chosenLetter.setChosen(true);
-        currentWord += String.valueOf(chosenLetter.letter());
+        currentWord += String.valueOf(chosenLetter.character());
 
         fireLetterOnFieldIsChosen(chosenLetter);
     }
