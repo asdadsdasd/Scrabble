@@ -1,5 +1,6 @@
 package model.view;
 
+import model.entity.Alphabet;
 import model.entity.Cell;
 import model.entity.Dictionary;
 import model.entity.GameModel;
@@ -28,6 +29,8 @@ public class GamePanel extends JFrame {
 
     private FieldWidget fieldWidget;
 
+    private AlphabetWidget alphabetWidget;
+
     private WidgetFactory widgetFactory = new WidgetFactory();
 
     private JMenuBar menu;
@@ -48,9 +51,11 @@ public class GamePanel extends JFrame {
         model.addPlayerActionListener(new PlayerObserver());
 
         //Главная панель, на которой будут распологаться все остальные
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setSize(1000, 1000);
+        //mainPanel = new JPanel();
+       // mainPanel.setLayout(new BorderLayout());
+        //mainPanel.setSize(1000, 1000);
+
+        setLayout(new BorderLayout());
 
         // Меню
         createMenu();
@@ -63,16 +68,23 @@ public class GamePanel extends JFrame {
         //setEnabledField(false);
         //mainPanel.add(fieldPanel, BorderLayout.WEST);
         this.fieldWidget = new FieldWidget(model.field(), widgetFactory);
-        mainPanel.add(fieldWidget, BorderLayout.WEST);
+        fieldWidget.createField();
+        add(fieldWidget, BorderLayout.WEST);
 
-        buildButtonField();
-        mainPanel.add(buttonPanel, BorderLayout.CENTER);
+        this.alphabetWidget = new AlphabetWidget(new Alphabet());
+        alphabetWidget.buildLetterPanel();
+        add(alphabetWidget, BorderLayout.CENTER);
+
+
+        //buildButtonField();
+        //mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
         drawLetterOnField();
 
-        setContentPane(mainPanel);
+        //setContentPane(mainPanel);
         pack();
         setResizable(false);
+        setVisible(true);
 
     }
 
@@ -114,8 +126,8 @@ public class GamePanel extends JFrame {
                     //fieldWidget = new FieldWidget(model.field(), widgetFactory);
                     //mainPanel.add(fieldWidget, BorderLayout.WEST);
                     fieldWidget.repaintField();
-                    mainPanel.revalidate();
-                    mainPanel.repaint();
+                    //mainPanel.revalidate();
+                    //mainPanel.repaint();
                 }
             }
         }

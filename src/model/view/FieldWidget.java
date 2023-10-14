@@ -15,7 +15,9 @@ public class FieldWidget extends JPanel {
     public FieldWidget(GameField field, WidgetFactory factory) {
         this.field = field;
         this.factory = factory;
+    }
 
+    public void createField(){
         setLayout(new GridLayout(field.height(), field.width()));
 
         Dimension dimension = new Dimension(FIELD_SIZE, FIELD_SIZE);

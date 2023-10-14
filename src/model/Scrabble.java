@@ -1,15 +1,15 @@
 package model;
 
-import model.entity.Dictionary;
 import model.view.GamePanel;
 
 import javax.swing.*;
 
-public class Scrubble {
+public class Scrabble {
     public static void main(String[] args) {
-        Dictionary.getDictionary();
-        JFrame frame = new GamePanel();
-        frame.setVisible(true);
+        //Dictionary.getDictionary();
+        SwingUtilities.invokeLater(GamePanel::new);
+//        JFrame frame = new GamePanel();
+//        frame.setVisible(true);
 
 
 
