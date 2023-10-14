@@ -12,21 +12,33 @@ public class FieldWidget extends JPanel {
 
     private final int FIELD_SIZE = 400;
 
-    public FieldWidget(GameField field, WidgetFactory factory){
+    public FieldWidget(GameField field, WidgetFactory factory) {
         this.field = field;
         this.factory = factory;
 
-        setLayout(new GridLayout(field.height(), field.height()));
+        setLayout(new GridLayout(field.height(), field.width()));
 
         Dimension dimension = new Dimension(FIELD_SIZE, FIELD_SIZE);
 
         setPreferredSize(dimension);
         setMinimumSize(dimension);
         setMaximumSize(dimension);
+
+        setVisible(true);
+
+        for (int row = 0; row < field.height(); row++) {
+            for (int col = 0; col < field.width(); col++) {
+                JButton button = new JButton("");
+                button.setFocusable(false);
+
+                //repaintField();
+            }
+        }
     }
 
-    private void repaintField(){
+    public void repaintField(){
         removeAll();
+        setLayout(new GridLayout(field.height(), field.height()));
 
         for (int row = 0; row < field.height(); row++) {
             for (int col = 0; col < field.width(); col++) {

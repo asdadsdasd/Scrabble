@@ -13,9 +13,11 @@ public class CellWidget extends JButton {
         if(cell == null) throw new RuntimeException("В CellWidget передан null");
         else{
             this.cell = cell;
-            setText(String.valueOf(cell.letter().character()));
+            if(cell.letter() != null)
+                setText(String.valueOf(cell.letter().character()));
             setBackground(Color.WHITE);
             setFocusable(false);
+            setVisible(true);
         }
     }
 

@@ -26,6 +26,10 @@ public class GamePanel extends JFrame {
 
     private JPanel centerPanel = new JPanel();
 
+    private FieldWidget fieldWidget;
+
+    private WidgetFactory widgetFactory = new WidgetFactory();
+
     private JMenuBar menu;
     private final String fileItems[] = new String []{"New", "Exit"};
 
@@ -46,6 +50,7 @@ public class GamePanel extends JFrame {
         //Главная панель, на которой будут распологаться все остальные
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
+        mainPanel.setSize(1000, 1000);
 
         // Меню
         createMenu();
@@ -54,9 +59,11 @@ public class GamePanel extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Игровое поле
-        createField();
-        setEnabledField(false);
-        mainPanel.add(fieldPanel, BorderLayout.WEST);
+        //createField();
+        //setEnabledField(false);
+        //mainPanel.add(fieldPanel, BorderLayout.WEST);
+        this.fieldWidget = new FieldWidget(model.field(), widgetFactory);
+        mainPanel.add(fieldWidget, BorderLayout.WEST);
 
         buildButtonField();
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
@@ -98,12 +105,17 @@ public class GamePanel extends JFrame {
             if ("new".equals(command)) {
                 if(applySettings()) {
                     model.startGame();
-                    createField();
-                    drawLetterOnField();
-                    buildButtonField();
-                    setEnabledField(false);
-                    setEnabledLetterButtons(true);
-                    setEnabledButtonWithText(true, "Пропустить ход");
+//                    createField();
+//                    drawLetterOnField();
+//                    buildButtonField();
+//                    setEnabledField(false);
+//                    setEnabledLetterButtons(true);
+//                    setEnabledButtonWithText(true, "Пропустить ход");
+                    //fieldWidget = new FieldWidget(model.field(), widgetFactory);
+                    //mainPanel.add(fieldWidget, BorderLayout.WEST);
+                    fieldWidget.repaintField();
+                    mainPanel.revalidate();
+                    mainPanel.repaint();
                 }
             }
         }
@@ -356,6 +368,7 @@ public class GamePanel extends JFrame {
             setEnabledField(false);
             setEnabledLetterButtons(true);
             setEnabledButtonWithText(false, "Завершить ход");
+            setEnabledButtonWithText(false, "Отмена");
             drawLetterOnField();
         }
 
@@ -375,6 +388,7 @@ public class GamePanel extends JFrame {
             setEnabledField(false);
             setEnabledLetterButtons(true);
             setEnabledButtonWithText(false, "Завершить ход");
+            setEnabledButtonWithText(false, "Отмена");
         }
 
         @Override
@@ -384,6 +398,7 @@ public class GamePanel extends JFrame {
             setEnabledButtonWithText(false, "Завершить ход");
             setEnabledButtonWithText(false, "Отмена");
             drawLetterOnField();
+            //todo при установке буквы и последующием нажатии отмены буква не пропадает с поля
         }
     }
 
