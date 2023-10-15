@@ -31,6 +31,8 @@ public class GamePanel extends JFrame {
 
     private AlphabetWidget alphabetWidget;
 
+    private ActionButtonWidget actionButtonWidget;
+
     private WidgetFactory widgetFactory = new WidgetFactory();
 
     private JMenuBar menu;
@@ -71,15 +73,22 @@ public class GamePanel extends JFrame {
         fieldWidget.createField();
         add(fieldWidget, BorderLayout.WEST);
 
+        // Создаем панель, которую затем поместим на основную панель
+        JPanel centerPanel = new JPanel(new GridLayout(2, 1));
         this.alphabetWidget = new AlphabetWidget(new Alphabet());
         alphabetWidget.buildLetterPanel();
-        add(alphabetWidget, BorderLayout.CENTER);
+        centerPanel.add(alphabetWidget);
+
+        this.actionButtonWidget = new ActionButtonWidget();
+        actionButtonWidget.buildActionButtonsPanel();
+        centerPanel.add(actionButtonWidget);
+        add(centerPanel, BorderLayout.CENTER);
 
 
         //buildButtonField();
         //mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        drawLetterOnField();
+        //drawLetterOnField();
 
         //setContentPane(mainPanel);
         pack();

@@ -31,9 +31,9 @@ public class AlphabetWidget extends JPanel {
         JButton btn;
         for (Character letter : letters){
             btn = new JButton(Character.toString(letter));
-            btn.setEnabled(false);
-            buttons.add(btn);
             add(btn);
+            buttons.add(btn);
+            btn.setEnabled(false);
             //btn.addActionListener(new GamePanel.ButtonClickListener()); //todo
         }
     }
