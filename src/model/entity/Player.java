@@ -1,5 +1,7 @@
 package model.entity;
 
+import model.events.GameEvent;
+import model.events.GameListener;
 import model.events.PlayerActionEvent;
 import model.events.PlayerActionListener;
 
@@ -27,7 +29,8 @@ public class Player {
     // ----------------------- Устанавливаем связь с полем -----------------------
     GameField field;
 
-    public Player (GameField field, String name) {
+    public Player (GameField field, String name, GameModel model) {
+        model.addGameListener(new GameObserver());
         this.field = field;
         this.name = name;
     }
@@ -56,7 +59,7 @@ public class Player {
 
 
     // ---------------------- Буква, которую нужно установить -----------------------
-    Letter letter;
+    private Letter letter;
 
     public void setActiveLetter(Letter l) {
         this.letter = l;
@@ -182,5 +185,24 @@ public class Player {
         for (PlayerActionListener o : listeners){
             o.cancel(event);
         }
+    }
+
+    private class GameObserver implements GameListener{
+
+        @Override
+        public void gameFinished(GameEvent e) {
+            playerScore = 0;
+        }
+
+        @Override
+        public void playerExchanged(GameEvent e) {
+            letter = null;
+        }
+        @Override
+        public void currentLetterIsChosen(GameEvent e) {}
+        @Override
+        public void dictionaryHasNotContainsWord(GameEvent e) {}
+        @Override
+        public void wordHasBeenComposed(GameEvent e) {}
     }
 }

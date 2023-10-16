@@ -75,11 +75,11 @@ public class GameField {
         return cells;
     }
 
-    //Возвращает клетки-соседи с переданной, в которых есть буква
+    //Возвращает клетки-соседи с переданной, в которых есть буква, и которые еще не были выбраны
     public List<Cell> cellsAdjacentToLetters(Cell cell){
         ArrayList<Cell> cells = new ArrayList<>();
         for(Cell c : neighbours(cell)){
-            if(c.letter() != null){
+            if(c.letter() != null && !c.letter().isChosen()){
                 cells.add(c);
             }
         }

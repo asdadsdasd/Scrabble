@@ -6,17 +6,22 @@ import model.entity.ComplicatedAlphabet;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AlphabetWidget extends JPanel {
     private AbstractAlphabet alphabet;
 
-    private List<JButton> buttons = new ArrayList<>();
+    private ArrayList<JButton> buttonList = new ArrayList<>();
 
     private List<Character> activeLetters;
 
     public AlphabetWidget(AbstractAlphabet alphabet){
         this.alphabet = alphabet;
+    }
+
+    public List<JButton> buttons() {
+        return Collections.unmodifiableList(buttonList);
     }
 
     public void buildLetterPanel(){
@@ -32,9 +37,15 @@ public class AlphabetWidget extends JPanel {
         for (Character letter : letters){
             btn = new JButton(Character.toString(letter));
             add(btn);
-            buttons.add(btn);
+            buttonList.add(btn);
             btn.setEnabled(false);
             //btn.addActionListener(new GamePanel.ButtonClickListener()); //todo
+        }
+    }
+
+    public void setEnabledButtons(boolean flag){
+        for (JButton button : buttonList){
+            button.setEnabled(flag);
         }
     }
 }

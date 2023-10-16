@@ -36,12 +36,12 @@ public class GameModel {
         Player p;
         PlayerObserver observer = new PlayerObserver();
 
-        p = new Player(field(), "1");
+        p = new Player(field(), "1", this);
         p.addPlayerActionListener(observer);
         playerList.add(p);
         activePlayer = 0;
 
-        p = new Player(field(), "2");
+        p = new Player(field(), "2", this);
         p.addPlayerActionListener(observer);
         playerList.add(p);
     }
@@ -115,6 +115,7 @@ public class GameModel {
     }
 
     public Player determineWinner(){
+        turnSkipCount = 0;
         if (playerList.get(0).score() > playerList.get(1).score()){
             return playerList.get(0);
         }

@@ -4,12 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ActionButtonWidget extends JPanel {
     private List<String> actionButtons = Arrays.asList("Завершить ход", "Отмена", "Пропустить ход");
 
-    private List<JButton> buttons = new ArrayList<>();
+    private List<JButton> buttonList = new ArrayList<>();
 
     public void buildActionButtonsPanel(){
         setLayout(new FlowLayout());
@@ -21,9 +22,26 @@ public class ActionButtonWidget extends JPanel {
         for (String str : actionButtons){
             btn = new JButton(str);
             add(btn);
-            buttons.add(btn);
+            buttonList.add(btn);
             btn.setEnabled(false);
-            //btn.addActionListener(new GamePanel.ButtonClickListener()); todo
+        }
+    }
+
+    public void turnOffAllButtons(){
+        for (JButton button : buttonList){
+            button.setEnabled(false);
+        }
+    }
+
+    public List<JButton> buttons() {
+        return Collections.unmodifiableList(buttonList);
+    }
+
+    public void setEnabledButtonWithText(boolean flag, String buttonText){
+        for (JButton button : buttonList){
+            if(button.getText().equals(buttonText)){
+                button.setEnabled(flag);
+            }
         }
     }
 }
