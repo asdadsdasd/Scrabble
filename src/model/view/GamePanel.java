@@ -22,6 +22,8 @@ public class GamePanel extends JFrame {
 
     private ActionButtonWidget actionButtonWidget;
 
+    private WordListWidget wordListWidget;
+
     private WidgetFactory widgetFactory = new WidgetFactory();
 
     private JMenuBar menu;
@@ -81,7 +83,9 @@ public class GamePanel extends JFrame {
         }
         add(centerPanel, BorderLayout.CENTER);
 
-
+        this.wordListWidget = new WordListWidget(model);
+        wordListWidget.buildPlayerWordsBoard();
+        add(wordListWidget, BorderLayout.EAST);
         //buildButtonField();
         //mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
@@ -158,6 +162,7 @@ public class GamePanel extends JFrame {
         alphabetWidget.setEnabledButtons(true);
         actionButtonWidget.turnOffAllButtons();
         actionButtonWidget.setEnabledButtonWithText(true, "Пропустить ход");
+        wordListWidget.clearLists();
     }
 
 

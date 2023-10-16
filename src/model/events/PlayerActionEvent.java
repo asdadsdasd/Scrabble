@@ -29,6 +29,7 @@ public class PlayerActionEvent extends EventObject {
         return letter;
     }
 
+    // -------------------------------- Составленное слово --------------------------------------
     String currentWord;
 
     public void setCurrentWord(String currentWord) {

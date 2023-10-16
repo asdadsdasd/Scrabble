@@ -145,10 +145,12 @@ public class GameModel {
 
         @Override
         public void turnIsSkipped(PlayerActionEvent e) {
-            if (e.letter().cell() != null){
-                Letter l = e.letter();
-                l.unsetCell();
-                l.unsetPlayer();
+            if (e.letter() != null) {
+                if (e.letter().cell() != null) {
+                    Letter l = e.letter();
+                    l.unsetCell();
+                    l.unsetPlayer();
+                }
             }
             if (e.player() == activePlayer()) {
                 fireTurnIsSkipped(e);
