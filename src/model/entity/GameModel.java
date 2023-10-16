@@ -77,8 +77,6 @@ public class GameModel {
         activePlayer++;
         if(activePlayer >= playerList.size()) activePlayer = 0;
 
-        firePlayerExchanged(activePlayer());
-
         field.setLettersNotChosen();
 
         if(isFieldFilled()){
@@ -231,14 +229,6 @@ public class GameModel {
             event.setPlayer(winner);
             for (GameListener listener : gameListenerList) {
                 listener.gameFinished(event);
-            }
-        }
-
-        protected void firePlayerExchanged(Player p) {
-            GameEvent event = new GameEvent(this);
-            event.setPlayer(p);
-            for (GameListener listener : gameListenerList) {
-                listener.playerExchanged(event);
             }
         }
 

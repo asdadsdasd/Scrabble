@@ -82,8 +82,6 @@ public class PlayerScoreWidget extends JPanel {
             secondPlayerScore = 0;
         }
         @Override
-        public void playerExchanged(GameEvent e) {}
-        @Override
         public void currentLetterIsChosen(GameEvent e) {}
         @Override
         public void dictionaryHasNotContainsWord(GameEvent e) {}

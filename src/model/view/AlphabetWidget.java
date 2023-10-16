@@ -2,6 +2,11 @@ package model.view;
 
 import model.entity.AbstractAlphabet;
 import model.entity.ComplicatedAlphabet;
+import model.entity.GameModel;
+import model.events.GameEvent;
+import model.events.GameListener;
+import model.events.PlayerActionEvent;
+import model.events.PlayerActionListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +21,9 @@ public class AlphabetWidget extends JPanel {
 
     private List<Character> activeLetters;
 
-    public AlphabetWidget(AbstractAlphabet alphabet){
+    public AlphabetWidget(AbstractAlphabet alphabet, GameModel model){
+        model.addGameListener(new GameObserver());
+        model.addPlayerActionListener(new PlayerObserver());
         this.alphabet = alphabet;
     }
 
@@ -46,6 +53,62 @@ public class AlphabetWidget extends JPanel {
     public void setEnabledButtons(boolean flag){
         for (JButton button : buttonList){
             button.setEnabled(flag);
+        }
+    }
+
+    private class PlayerObserver implements PlayerActionListener{
+
+        @Override
+        public void letterIsPlaced(PlayerActionEvent e) {
+            setEnabledButtons(false);
+        }
+
+        @Override
+        public void letterIsReceived(PlayerActionEvent e) {
+
+        }
+
+        @Override
+        public void turnIsSkipped(PlayerActionEvent e) {
+            setEnabledButtons(true);
+        }
+
+        @Override
+        public void letterOnFieldIsChosen(PlayerActionEvent e) {
+
+        }
+
+        @Override
+        public void turnIsOver(PlayerActionEvent e) {
+            setEnabledButtons(true);
+        }
+
+        @Override
+        public void cancel(PlayerActionEvent e) {
+            setEnabledButtons(true);
+        }
+    }
+
+    private class GameObserver implements GameListener{
+
+        @Override
+        public void gameFinished(GameEvent e) {
+            setEnabledButtons(false);
+        }
+
+        @Override
+        public void currentLetterIsChosen(GameEvent e) {
+
+        }
+
+        @Override
+        public void dictionaryHasNotContainsWord(GameEvent e) {
+
+        }
+
+        @Override
+        public void wordHasBeenComposed(GameEvent e) {
+
         }
     }
 }

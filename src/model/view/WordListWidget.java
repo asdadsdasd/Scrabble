@@ -87,8 +87,6 @@ public class WordListWidget extends JPanel {
             secondPlayerList.clear();
         }
         @Override
-        public void playerExchanged(GameEvent e) {}
-        @Override
         public void currentLetterIsChosen(GameEvent e) {}
         @Override
         public void dictionaryHasNotContainsWord(GameEvent e) {}

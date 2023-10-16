@@ -42,12 +42,6 @@ public class GamePanel extends JFrame {
 
         //Представление должно реагировать на изменение состояния модели
         model.addGameListener(new GameObserver());
-        model.addPlayerActionListener(new PlayerObserver());
-
-        //Главная панель, на которой будут распологаться все остальные
-        //mainPanel = new JPanel();
-        // mainPanel.setLayout(new BorderLayout());
-        //mainPanel.setSize(1000, 1000);
 
         setLayout(new BorderLayout());
 
@@ -57,13 +51,8 @@ public class GamePanel extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Игровое поле
-        //createField();
-        //setEnabledField(false);
-        //mainPanel.add(fieldPanel, BorderLayout.WEST);
-
         // Создаем игровое поле
-        this.fieldWidget = new FieldWidget(model.field(), widgetFactory);
+        this.fieldWidget = new FieldWidget(model.field(), widgetFactory, model);
         fieldWidget.createField();
         add(fieldWidget, BorderLayout.WEST);
 
@@ -71,7 +60,7 @@ public class GamePanel extends JFrame {
         JPanel centerPanel = new JPanel(new GridLayout(2, 1));
 
         // Создаем виджет, отображающий буквы алфавита
-        this.alphabetWidget = new AlphabetWidget(new Alphabet());
+        this.alphabetWidget = new AlphabetWidget(new Alphabet(), model);
         alphabetWidget.buildLetterPanel();
         for (JButton button : alphabetWidget.buttons()) {
             button.addActionListener(new LetterClickListener());
@@ -79,7 +68,7 @@ public class GamePanel extends JFrame {
         centerPanel.add(alphabetWidget);
 
         // Создаем виджет, отображающий кнопки действий
-        this.actionButtonWidget = new ActionButtonWidget();
+        this.actionButtonWidget = new ActionButtonWidget(model);
         actionButtonWidget.buildActionButtonsPanel();
         centerPanel.add(actionButtonWidget);
         for (JButton button : actionButtonWidget.buttons()){
@@ -87,29 +76,24 @@ public class GamePanel extends JFrame {
         }
         add(centerPanel, BorderLayout.CENTER);
 
-
-
+        // Создаем панель, которую затем поместим на основную панель
         JPanel eastPanel = new JPanel();
-        eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS)); // Вертикальное расположение компонентов
-// обеспечивает отступы между компонентами
+        eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+
         eastPanel.setBorder(new EmptyBorder(0,10,0,10));
 
+        // Создаем виджет, отображающий текущий счет игроков
         this.playerScoreWidget = new PlayerScoreWidget(model);
         playerScoreWidget.buildPlayerScorePane();
         eastPanel.add(playerScoreWidget);
 
+        // Создаем виджет, отображающий списки слов, составленные игроками
         this.wordListWidget = new WordListWidget(model);
         wordListWidget.buildPlayerWordsBoard();
         eastPanel.add(wordListWidget);
 
         add(eastPanel, BorderLayout.EAST);
 
-        //buildButtonField();
-        //mainPanel.add(buttonPanel, BorderLayout.CENTER);
-
-        //drawLetterOnField();
-
-        //setContentPane(mainPanel);
         pack();
         setResizable(false);
         setVisible(true);
@@ -194,7 +178,7 @@ public class GamePanel extends JFrame {
             button.setEnabled(false);
 
             // Ставим на поле букву текущего игрока
-            Point p = fieldWidget.cellsMap().get(button);
+            Point p = fieldWidget.getPointByButton(button);
             for (Cell c : model.field().cells()) {
                 if (c.position().equals(p)) {
                     if (c.letter() == null) {
@@ -236,60 +220,7 @@ public class GamePanel extends JFrame {
         }
     }
 
-
-    private class PlayerObserver implements PlayerActionListener {
-
-        @Override
-        public void letterIsPlaced(PlayerActionEvent e) {
-            alphabetWidget.setEnabledButtons(false);
-            fieldWidget.drawLettersOnField();
-            fieldWidget.setEnabledCellsWithLetters();
-            fieldWidget.setDefaultExceptChosenOne(e.letter().cell());
-            actionButtonWidget.setEnabledButtonWithText(true, "Отмена");
-        }
-
-        @Override
-        public void letterIsReceived(PlayerActionEvent e) {
-            fieldWidget.setEnabledButtonsAdjacentToLetters();
-        }
-
-        @Override
-        public void turnIsSkipped(PlayerActionEvent e) {
-            alphabetWidget.setEnabledButtons(true);
-            fieldWidget.setEnabledButtons(false);
-            fieldWidget.setDefault();
-            actionButtonWidget.setEnabledButtonWithText(false, "Завершить ход");
-            actionButtonWidget.setEnabledButtonWithText(false, "Отмена");
-            fieldWidget.drawLettersOnField();
-        }
-
-        @Override
-        public void letterOnFieldIsChosen(PlayerActionEvent e) {
-            fieldWidget.setEnabledButtons(false);
-            e.letter().setChosen(true); //todo как доделаю передвинуть в gameModel
-            fieldWidget.setEnabledButtonsAdjacentToLetters(e.letter().cell());
-        }
-
-        @Override
-        public void turnIsOver(PlayerActionEvent e) {
-            alphabetWidget.setEnabledButtons(true);
-            fieldWidget.setEnabledButtons(false);
-            fieldWidget.setDefault();
-            actionButtonWidget.setEnabledButtonWithText(false, "Завершить ход");
-            actionButtonWidget.setEnabledButtonWithText(false, "Отмена");
-        }
-
-        @Override
-        public void cancel(PlayerActionEvent e) {
-            alphabetWidget.setEnabledButtons(true);
-            fieldWidget.setEnabledButtons(false);
-            fieldWidget.setDefault();
-            actionButtonWidget.setEnabledButtonWithText(false, "Завершить ход");
-            actionButtonWidget.setEnabledButtonWithText(false, "Отмена");
-            fieldWidget.drawLettersOnField();
-        }
-    }
-
+    // ------------------------- Реагируем на изменения модели ----------------------
         private class GameObserver implements GameListener {
 
             @Override
@@ -301,20 +232,10 @@ public class GamePanel extends JFrame {
                     String str = "Ничья";
                     JOptionPane.showMessageDialog(null, str, "Ничья", JOptionPane.INFORMATION_MESSAGE);
                 }
-                fieldWidget.setDefault();
-                fieldWidget.setEnabledButtons(false);
-                alphabetWidget.setEnabledButtons(false);
-                actionButtonWidget.turnOffAllButtons();
-            }
-
-            @Override
-            public void playerExchanged(GameEvent e) {
-
             }
 
             @Override
             public void currentLetterIsChosen(GameEvent e) {
-                actionButtonWidget.setEnabledButtonWithText(true, "Завершить ход");
             }
 
             @Override

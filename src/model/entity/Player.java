@@ -193,11 +193,6 @@ public class Player {
         public void gameFinished(GameEvent e) {
             playerScore = 0;
         }
-
-        @Override
-        public void playerExchanged(GameEvent e) {
-            letter = null;
-        }
         @Override
         public void currentLetterIsChosen(GameEvent e) {}
         @Override

@@ -2,6 +2,11 @@ package model.view;
 
 import model.entity.Cell;
 import model.entity.GameField;
+import model.entity.GameModel;
+import model.events.GameEvent;
+import model.events.GameListener;
+import model.events.PlayerActionEvent;
+import model.events.PlayerActionListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,11 +18,13 @@ public class FieldWidget extends JPanel {
 
     private WidgetFactory factory;
 
-    private Map<CellWidget, Point> cellWidgetMap = new HashMap<>();
+    private final Map<CellWidget, Point> cellWidgetMap = new HashMap<>();
 
     private final int FIELD_SIZE = 400;
 
-    public FieldWidget(GameField field, WidgetFactory factory) {
+    public FieldWidget(GameField field, WidgetFactory factory, GameModel model) {
+        model.addPlayerActionListener(new PlayerObserver());
+        model.addGameListener(new GameObserver());
         this.field = field;
         this.factory = factory;
     }
@@ -53,6 +60,10 @@ public class FieldWidget extends JPanel {
 
     public Map<CellWidget, Point> cellsMap() {
         return Collections.unmodifiableMap(cellWidgetMap);
+    }
+
+    public Point getPointByButton(CellWidget cellWidget){
+        return (Point) cellWidgetMap.get(cellWidget).clone();
     }
 
     public Map<Point, CellWidget> reverseCells() {
@@ -108,6 +119,72 @@ public class FieldWidget extends JPanel {
     public void setDefault(){
         for (Map.Entry<CellWidget, Point> entry : cellWidgetMap.entrySet()) {
             entry.getKey().setColorDefault();
+        }
+    }
+
+    private class PlayerObserver implements PlayerActionListener{
+
+        @Override
+        public void letterIsPlaced(PlayerActionEvent e) {
+            drawLettersOnField();
+            setEnabledCellsWithLetters();
+            setDefaultExceptChosenOne(e.letter().cell());
+        }
+
+        @Override
+        public void letterIsReceived(PlayerActionEvent e) {
+            setEnabledButtonsAdjacentToLetters();
+        }
+
+        @Override
+        public void turnIsSkipped(PlayerActionEvent e) {
+            setEnabledButtons(false);
+            setDefault();
+            drawLettersOnField();
+        }
+
+        @Override
+        public void letterOnFieldIsChosen(PlayerActionEvent e) {
+            setEnabledButtons(false);
+            setEnabledButtonsAdjacentToLetters(e.letter().cell());
+            e.letter().setChosen(true);
+        }
+
+        @Override
+        public void turnIsOver(PlayerActionEvent e) {
+            setEnabledButtons(false);
+            setDefault();
+        }
+
+        @Override
+        public void cancel(PlayerActionEvent e) {
+            setEnabledButtons(false);
+            setDefault();
+            drawLettersOnField();
+        }
+    }
+
+    private class GameObserver implements GameListener{
+
+        @Override
+        public void gameFinished(GameEvent e) {
+            setDefault();
+            setEnabledButtons(false);
+        }
+
+        @Override
+        public void currentLetterIsChosen(GameEvent e) {
+
+        }
+
+        @Override
+        public void dictionaryHasNotContainsWord(GameEvent e) {
+
+        }
+
+        @Override
+        public void wordHasBeenComposed(GameEvent e) {
+
         }
     }
 }
