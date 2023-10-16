@@ -1,10 +1,7 @@
 package model.view;
 
 import model.entity.GameModel;
-import model.events.GameEvent;
-import model.events.GameListener;
-import model.events.PlayerActionEvent;
-import model.events.PlayerActionListener;
+import model.events.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +15,10 @@ public class PlayerScoreWidget extends JPanel {
 
     private JLabel secondPlayerLabel = new JLabel();
 
-    public PlayerScoreWidget(GameModel model){
+    public PlayerScoreWidget(GameModel model, GamePanel panel){
         model.addGameListener(new GameObserver());
         model.addPlayerActionListener(new PlayerObserver());
+        panel.addMenuListener(new MenuObserver());
     }
 
     public void buildPlayerScorePane(){
@@ -40,13 +38,6 @@ public class PlayerScoreWidget extends JPanel {
         add(secondPlayerLabel);
 
         setVisible(true);
-    }
-
-    public void setStartSettings(){
-        firstPlayerScore = 0;
-        secondPlayerScore = 0;
-        firstPlayerLabel.setText("Счет первого игрока: " + firstPlayerScore);
-        secondPlayerLabel.setText("Счёт второго игрока: " + secondPlayerScore);
     }
 
     private class PlayerObserver implements PlayerActionListener {
@@ -87,5 +78,15 @@ public class PlayerScoreWidget extends JPanel {
         public void dictionaryHasNotContainsWord(GameEvent e) {}
         @Override
         public void wordHasBeenComposed(GameEvent e) {}
+    }
+
+    private class MenuObserver implements MenuListener {
+        @Override
+        public void newGameStarted() {
+            firstPlayerScore = 0;
+            secondPlayerScore = 0;
+            firstPlayerLabel.setText("Счет первого игрока: " + firstPlayerScore);
+            secondPlayerLabel.setText("Счёт второго игрока: " + secondPlayerScore);
+        }
     }
 }

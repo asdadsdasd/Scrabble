@@ -3,16 +3,16 @@ package model.view;
 import model.entity.Cell;
 import model.entity.GameField;
 import model.entity.GameModel;
-import model.events.GameEvent;
-import model.events.GameListener;
-import model.events.PlayerActionEvent;
-import model.events.PlayerActionListener;
+import model.events.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 
 public class FieldWidget extends JPanel {
+    private GameModel model;
 
     private GameField field;
 
@@ -22,9 +22,11 @@ public class FieldWidget extends JPanel {
 
     private final int FIELD_SIZE = 400;
 
-    public FieldWidget(GameField field, WidgetFactory factory, GameModel model) {
+    public FieldWidget(GameField field, WidgetFactory factory, GameModel model, GamePanel panel) {
         model.addPlayerActionListener(new PlayerObserver());
         model.addGameListener(new GameObserver());
+        panel.addMenuListener(new MenuObserver());
+        this.model = model;
         this.field = field;
         this.factory = factory;
     }
@@ -51,6 +53,7 @@ public class FieldWidget extends JPanel {
             for (int col = 0; col < field.width(); col++) {
                 Point p = new Point(col, row);
                 CellWidget button = factory.createCellWidget(field.cell(p));
+                button.addActionListener(new FieldClickListener());
                 add(button);
                 cellWidgetMap.put(button, p);
             }
@@ -58,15 +61,11 @@ public class FieldWidget extends JPanel {
         validate();
     }
 
-    public Map<CellWidget, Point> cellsMap() {
-        return Collections.unmodifiableMap(cellWidgetMap);
-    }
-
-    public Point getPointByButton(CellWidget cellWidget){
+    private Point getPointByButton(CellWidget cellWidget){
         return (Point) cellWidgetMap.get(cellWidget).clone();
     }
 
-    public Map<Point, CellWidget> reverseCells() {
+    private Map<Point, CellWidget> reverseCells() {
         HashMap<Point, CellWidget> reverseMap = new HashMap<>();
         for (Map.Entry<CellWidget, Point> entry : cellWidgetMap.entrySet()) {
             reverseMap.put(entry.getValue(), entry.getKey());
@@ -74,25 +73,25 @@ public class FieldWidget extends JPanel {
         return reverseMap;
     }
 
-    public void drawLettersOnField() {
+    private void drawLettersOnField() {
         for (Map.Entry<CellWidget, Point> entry : cellWidgetMap.entrySet()) {
             entry.getKey().repaintButton();
         }
     }
 
-    public void setEnabledButtons(boolean flag) {
+    private void setEnabledButtons(boolean flag) {
         for (CellWidget cell : cellWidgetMap.keySet()) {
             cell.setEnabled(flag);
         }
     }
 
-    public void setEnabledCellsWithLetters() {
+    private void setEnabledCellsWithLetters() {
         for (Map.Entry<CellWidget, Point> entry : cellWidgetMap.entrySet()) {
             entry.getKey().setEnabledIfHasLetter();
         }
     }
 
-    public void setEnabledButtonsAdjacentToLetters() {
+    private void setEnabledButtonsAdjacentToLetters() {
         setEnabledButtons(false);
         for (Cell c : field.cellsAdjacentToLetters()) {
             CellWidget widget = reverseCells().get(c.position());
@@ -100,14 +99,14 @@ public class FieldWidget extends JPanel {
         }
     }
 
-    public void setEnabledButtonsAdjacentToLetters(Cell cell) {
+    private void setEnabledButtonsAdjacentToLetters(Cell cell) {
         Map<Point, CellWidget> map = reverseCells();
         for (Cell c : field.cellsAdjacentToLetters(cell)) {
             map.get(c.position()).setEnabled(true);
         }
     }
 
-    public void setDefaultExceptChosenOne(Cell cell){
+    private void setDefaultExceptChosenOne(Cell cell){
         for (Map.Entry<CellWidget, Point> entry : cellWidgetMap.entrySet()) {
             if (!entry.getValue().equals(cell.position())) {
                 entry.getKey().setColorDefault();
@@ -116,9 +115,32 @@ public class FieldWidget extends JPanel {
         }
     }
 
-    public void setDefault(){
+    private void setDefault(){
         for (Map.Entry<CellWidget, Point> entry : cellWidgetMap.entrySet()) {
             entry.getKey().setColorDefault();
+        }
+    }
+
+    private class FieldClickListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            CellWidget button = (CellWidget) e.getSource();
+            button.setEnabled(false);
+
+            // Ставим на поле букву текущего игрока
+            Point p = getPointByButton(button);
+            for (Cell c : field.cells()) {
+                if (c.position().equals(p)) {
+                    if (c.letter() == null) {
+                        button.setColorPlaced();
+                        model.activePlayer().setLetterTo(p);
+                    } else {
+                        button.setColorChosen();
+                        model.activePlayer().chooseLetter(p);
+                    }
+                }
+            }
         }
     }
 
@@ -185,6 +207,14 @@ public class FieldWidget extends JPanel {
         @Override
         public void wordHasBeenComposed(GameEvent e) {
 
+        }
+    }
+
+    private class MenuObserver implements MenuListener {
+        @Override
+        public void newGameStarted() {
+            rebuildField();
+            setEnabledButtons(false);
         }
     }
 }

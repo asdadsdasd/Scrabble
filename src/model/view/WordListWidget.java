@@ -2,10 +2,7 @@ package model.view;
 
 import model.entity.GameModel;
 import model.entity.Player;
-import model.events.GameEvent;
-import model.events.GameListener;
-import model.events.PlayerActionEvent;
-import model.events.PlayerActionListener;
+import model.events.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +19,10 @@ public class WordListWidget extends JPanel {
 
     private JList<String> secondPlayerJList;
 
-    public WordListWidget(GameModel model){
+    public WordListWidget(GameModel model, GamePanel panel){
         model.addPlayerActionListener(new PlayerObserver());
         model.addGameListener(new GameObserver());
+        panel.addMenuListener(new MenuObserver());
     }
 
     public void buildPlayerWordsBoard() {
@@ -45,18 +43,12 @@ public class WordListWidget extends JPanel {
         JScrollPane scrollPane1 = new JScrollPane(firstPlayerJList);
         JScrollPane scrollPane2 = new JScrollPane(secondPlayerJList);
 
-        dimension = new Dimension(150, 250);
-
         add(scrollPane1);
         add(scrollPane2);
 
         setVisible(true);
     }
 
-    public void clearLists(){
-        firstPlayerList.clear();
-        secondPlayerList.clear();
-    }
 
     private class PlayerObserver implements PlayerActionListener{
         @Override
@@ -92,5 +84,13 @@ public class WordListWidget extends JPanel {
         public void dictionaryHasNotContainsWord(GameEvent e) {}
         @Override
         public void wordHasBeenComposed(GameEvent e) {}
+    }
+
+    private class MenuObserver implements MenuListener {
+        @Override
+        public void newGameStarted() {
+            firstPlayerList.clear();
+            secondPlayerList.clear();
+        }
     }
 }

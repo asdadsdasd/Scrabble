@@ -1,13 +1,9 @@
 package model.view;
 
 import model.entity.Alphabet;
-import model.entity.Cell;
 import model.entity.Dictionary;
 import model.entity.GameModel;
-import model.events.GameEvent;
-import model.events.GameListener;
-import model.events.PlayerActionEvent;
-import model.events.PlayerActionListener;
+import model.events.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 
 public class GamePanel extends JFrame {
     private FieldWidget fieldWidget;
@@ -52,7 +49,7 @@ public class GamePanel extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Создаем игровое поле
-        this.fieldWidget = new FieldWidget(model.field(), widgetFactory, model);
+        this.fieldWidget = new FieldWidget(model.field(), widgetFactory, model, this);
         fieldWidget.createField();
         add(fieldWidget, BorderLayout.WEST);
 
@@ -60,20 +57,16 @@ public class GamePanel extends JFrame {
         JPanel centerPanel = new JPanel(new GridLayout(2, 1));
 
         // Создаем виджет, отображающий буквы алфавита
-        this.alphabetWidget = new AlphabetWidget(new Alphabet(), model);
+        this.alphabetWidget = new AlphabetWidget(new Alphabet(), model, this);
         alphabetWidget.buildLetterPanel();
-        for (JButton button : alphabetWidget.buttons()) {
-            button.addActionListener(new LetterClickListener());
-        }
+
         centerPanel.add(alphabetWidget);
 
         // Создаем виджет, отображающий кнопки действий
-        this.actionButtonWidget = new ActionButtonWidget(model);
+        this.actionButtonWidget = new ActionButtonWidget(model, this);
         actionButtonWidget.buildActionButtonsPanel();
         centerPanel.add(actionButtonWidget);
-        for (JButton button : actionButtonWidget.buttons()){
-            button.addActionListener(new ActionButtonClickListener());
-        }
+
         add(centerPanel, BorderLayout.CENTER);
 
         // Создаем панель, которую затем поместим на основную панель
@@ -83,12 +76,12 @@ public class GamePanel extends JFrame {
         eastPanel.setBorder(new EmptyBorder(0,10,0,10));
 
         // Создаем виджет, отображающий текущий счет игроков
-        this.playerScoreWidget = new PlayerScoreWidget(model);
+        this.playerScoreWidget = new PlayerScoreWidget(model, this);
         playerScoreWidget.buildPlayerScorePane();
         eastPanel.add(playerScoreWidget);
 
         // Создаем виджет, отображающий списки слов, составленные игроками
-        this.wordListWidget = new WordListWidget(model);
+        this.wordListWidget = new WordListWidget(model, this);
         wordListWidget.buildPlayerWordsBoard();
         eastPanel.add(wordListWidget);
 
@@ -129,9 +122,21 @@ public class GamePanel extends JFrame {
             if ("new".equals(command)) {
                 if (applySettings()) {
                     model.startGame();
-                    setStartCondition();
+                    fireNewGameStarted();
                 }
             }
+        }
+    }
+
+    private List<MenuListener> listeners = new ArrayList<>();
+
+    public void addMenuListener(MenuListener l){ listeners.add(l); }
+
+    public void removeMenuListener(MenuListener l){ listeners.remove(l); }
+
+    private void fireNewGameStarted(){
+        for (MenuListener l : listeners){
+            l.newGameStarted();
         }
     }
 
@@ -154,72 +159,6 @@ public class GamePanel extends JFrame {
         return false;
     }
 
-
-    private void setStartCondition() {
-        fieldWidget.rebuildField();
-        for (Map.Entry<CellWidget, Point> entry : fieldWidget.cellsMap().entrySet()) {
-            entry.getKey().addActionListener(new FieldClickListener());
-        }
-        fieldWidget.setEnabledButtons(false);
-        alphabetWidget.setEnabledButtons(true);
-        actionButtonWidget.turnOffAllButtons();
-        actionButtonWidget.setEnabledButtonWithText(true, "Пропустить ход");
-        wordListWidget.clearLists();
-        playerScoreWidget.setStartSettings();
-    }
-
-    // ------------------------- Реагируем на действия игрока ----------------------
-
-    private class FieldClickListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            CellWidget button = (CellWidget) e.getSource();
-            button.setEnabled(false);
-
-            // Ставим на поле букву текущего игрока
-            Point p = fieldWidget.getPointByButton(button);
-            for (Cell c : model.field().cells()) {
-                if (c.position().equals(p)) {
-                    if (c.letter() == null) {
-                        button.setColorPlaced();
-                        model.activePlayer().setLetterTo(p);
-                    } else {
-                        button.setColorChosen();
-                        model.activePlayer().chooseLetter(p);
-                    }
-                }
-            }
-        }
-    }
-
-    private class LetterClickListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JButton btn = (JButton) e.getSource();
-            String btnText = btn.getText();
-            System.out.println(btnText);
-            model.setLetterToActivePlayer(btnText.charAt(0));
-        }
-    }
-
-    private class ActionButtonClickListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JButton btn = (JButton) e.getSource();
-            String btnText = btn.getText();
-            System.out.println(btnText);
-            if (btnText.equals("Пропустить ход")) {
-                model.activePlayer().skipTurn();
-            } else if (btnText.equals("Завершить ход")) {
-                fieldWidget.setEnabledButtons(false);
-                model.activePlayer().endTurn();
-            } else if (btnText.equals("Отмена")) {
-                model.activePlayer().cancel();
-            }
-        }
-    }
-
     // ------------------------- Реагируем на изменения модели ----------------------
         private class GameObserver implements GameListener {
 
@@ -233,10 +172,8 @@ public class GamePanel extends JFrame {
                     JOptionPane.showMessageDialog(null, str, "Ничья", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
-
             @Override
-            public void currentLetterIsChosen(GameEvent e) {
-            }
+            public void currentLetterIsChosen(GameEvent e) {}
 
             @Override
             public void dictionaryHasNotContainsWord(GameEvent e) {

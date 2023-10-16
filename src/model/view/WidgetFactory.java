@@ -8,9 +8,6 @@ import java.util.Map;
 public class WidgetFactory {
     private final Map<Cell, CellWidget> cells = new HashMap<>();
 
-    public Map<Cell, CellWidget> getCells(){
-        return cells;
-    }
 
     //Создать виджет клетки
     public CellWidget createCellWidget(Cell cell){

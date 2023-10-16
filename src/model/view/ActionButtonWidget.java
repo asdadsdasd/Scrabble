@@ -1,26 +1,29 @@
 package model.view;
 
 import model.entity.GameModel;
-import model.events.GameEvent;
-import model.events.GameListener;
-import model.events.PlayerActionEvent;
-import model.events.PlayerActionListener;
+import model.events.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class ActionButtonWidget extends JPanel {
+    private GameModel model;
+
     private List<String> actionButtons = Arrays.asList("Завершить ход", "Отмена", "Пропустить ход");
 
     private List<JButton> buttonList = new ArrayList<>();
 
-    public ActionButtonWidget(GameModel model){
+    public ActionButtonWidget(GameModel model, GamePanel panel){
         model.addPlayerActionListener(new PlayerObserver());
         model.addGameListener(new GameObserver());
+        panel.addMenuListener(new MenuObserver());
+        this.model = model;
     }
 
     public void buildActionButtonsPanel(){
@@ -33,25 +36,38 @@ public class ActionButtonWidget extends JPanel {
         for (String str : actionButtons){
             btn = new JButton(str);
             add(btn);
+            btn.addActionListener(new ActionButtonClickListener());
             buttonList.add(btn);
             btn.setEnabled(false);
         }
     }
 
-    public void turnOffAllButtons(){
+    private void turnOffAllButtons(){
         for (JButton button : buttonList){
             button.setEnabled(false);
         }
     }
 
-    public List<JButton> buttons() {
-        return Collections.unmodifiableList(buttonList);
-    }
-
-    public void setEnabledButtonWithText(boolean flag, String buttonText){
+    private void setEnabledButtonWithText(boolean flag, String buttonText){
         for (JButton button : buttonList){
             if(button.getText().equals(buttonText)){
                 button.setEnabled(flag);
+            }
+        }
+    }
+
+    private class ActionButtonClickListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton btn = (JButton) e.getSource();
+            String btnText = btn.getText();
+            System.out.println(btnText);
+            if (btnText.equals("Пропустить ход")) {
+                model.activePlayer().skipTurn();
+            } else if (btnText.equals("Завершить ход")) {
+                model.activePlayer().endTurn();
+            } else if (btnText.equals("Отмена")) {
+                model.activePlayer().cancel();
             }
         }
     }
@@ -112,6 +128,14 @@ public class ActionButtonWidget extends JPanel {
         @Override
         public void wordHasBeenComposed(GameEvent e) {
 
+        }
+    }
+
+    private class MenuObserver implements MenuListener {
+        @Override
+        public void newGameStarted() {
+            turnOffAllButtons();
+            setEnabledButtonWithText(true, "Пропустить ход");
         }
     }
 }
