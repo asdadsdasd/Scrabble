@@ -34,7 +34,7 @@ public class FieldWidget extends JPanel {
         setVisible(true);
     }
 
-    public void repaintField() {
+    public void rebuildField() {
         removeAll();
         cellWidgetMap.clear();
 

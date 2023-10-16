@@ -14,7 +14,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
-import java.util.List;
 
 public class GamePanel extends JFrame {
     private FieldWidget fieldWidget;
@@ -151,7 +150,7 @@ public class GamePanel extends JFrame {
 
 
     private void setStartCondition() {
-        fieldWidget.repaintField();
+        fieldWidget.rebuildField();
         for (Map.Entry<CellWidget, Point> entry : fieldWidget.cellsMap().entrySet()) {
             entry.getKey().addActionListener(new FieldClickListener());
         }
