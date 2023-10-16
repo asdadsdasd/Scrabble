@@ -29,8 +29,9 @@ public class WordListWidget extends JPanel {
 
     public void buildPlayerWordsBoard() {
         setLayout(new GridLayout(1, 2));
+        setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
 
-        Dimension dimension = new Dimension(300, 300);
+        Dimension dimension = new Dimension(300, 250);
 
         setPreferredSize(dimension);
         setMinimumSize(dimension);
@@ -44,15 +45,7 @@ public class WordListWidget extends JPanel {
         JScrollPane scrollPane1 = new JScrollPane(firstPlayerJList);
         JScrollPane scrollPane2 = new JScrollPane(secondPlayerJList);
 
-        dimension = new Dimension(150, 300);
-
-        scrollPane1.setPreferredSize(dimension);
-        scrollPane1.setMinimumSize(dimension);
-        scrollPane1.setMaximumSize(dimension);
-
-        scrollPane2.setPreferredSize(dimension);
-        scrollPane2.setMinimumSize(dimension);
-        scrollPane2.setMaximumSize(dimension);
+        dimension = new Dimension(150, 250);
 
         add(scrollPane1);
         add(scrollPane2);
@@ -79,7 +72,8 @@ public class WordListWidget extends JPanel {
             if (e.currentWord() != null && !e.currentWord().isEmpty()) {
                 if (e.player().name().equals("1"))
                     firstPlayerList.addElement(e.currentWord());
-                else secondPlayerList.addElement(e.currentWord());
+                else if (e.player().name().equals("2"))
+                    secondPlayerList.addElement(e.currentWord());
             }
         }
         @Override

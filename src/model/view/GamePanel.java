@@ -10,6 +10,7 @@ import model.events.PlayerActionEvent;
 import model.events.PlayerActionListener;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,8 @@ public class GamePanel extends JFrame {
     private ActionButtonWidget actionButtonWidget;
 
     private WordListWidget wordListWidget;
+
+    private  PlayerScoreWidget playerScoreWidget;
 
     private WidgetFactory widgetFactory = new WidgetFactory();
 
@@ -66,6 +69,7 @@ public class GamePanel extends JFrame {
 
         // Создаем панель, которую затем поместим на основную панель
         JPanel centerPanel = new JPanel(new GridLayout(2, 1));
+
         // Создаем виджет, отображающий буквы алфавита
         this.alphabetWidget = new AlphabetWidget(new Alphabet());
         alphabetWidget.buildLetterPanel();
@@ -83,9 +87,23 @@ public class GamePanel extends JFrame {
         }
         add(centerPanel, BorderLayout.CENTER);
 
+
+
+        JPanel eastPanel = new JPanel();
+        eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS)); // Вертикальное расположение компонентов
+// обеспечивает отступы между компонентами
+        eastPanel.setBorder(new EmptyBorder(0,10,0,10));
+
+        this.playerScoreWidget = new PlayerScoreWidget(model);
+        playerScoreWidget.buildPlayerScorePane();
+        eastPanel.add(playerScoreWidget);
+
         this.wordListWidget = new WordListWidget(model);
         wordListWidget.buildPlayerWordsBoard();
-        add(wordListWidget, BorderLayout.EAST);
+        eastPanel.add(wordListWidget);
+
+        add(eastPanel, BorderLayout.EAST);
+
         //buildButtonField();
         //mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
@@ -163,11 +181,8 @@ public class GamePanel extends JFrame {
         actionButtonWidget.turnOffAllButtons();
         actionButtonWidget.setEnabledButtonWithText(true, "Пропустить ход");
         wordListWidget.clearLists();
+        playerScoreWidget.setStartSettings();
     }
-
-
-    // ------------------------- Создаем поле с кнопками ----------------------
-
 
     // ------------------------- Реагируем на действия игрока ----------------------
 
