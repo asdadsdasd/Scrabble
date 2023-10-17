@@ -20,6 +20,8 @@ public class FieldWidget extends JPanel {
 
     private final Map<CellWidget, Point> cellWidgetMap = new HashMap<>();
 
+    private ArrayList<CellWidget> activeCells = new ArrayList<>();
+
     private final int FIELD_SIZE = 400;
 
     public FieldWidget(GameField field, WidgetFactory factory, GameModel model, GamePanel panel) {
@@ -91,15 +93,22 @@ public class FieldWidget extends JPanel {
         }
     }
 
-    private void setEnabledButtonsAdjacentToLetters() {
+    private void getNewActiveButtons() {
         setEnabledButtons(false);
+        activeCells.clear();
         for (Cell c : field.cellsAdjacentToLetters()) {
             CellWidget widget = reverseCells().get(c.position());
-            widget.setEnabled(true);
+            activeCells.add(widget);
         }
     }
 
-    private void setEnabledButtonsAdjacentToLetters(Cell cell) {
+    private void setEnabledActiveButtons(boolean flag){
+        for (CellWidget w : activeCells){
+            w.setEnabled(flag);
+        }
+    }
+
+    private void setEnabledCellsAdjacentToLetters(Cell cell) {
         Map<Point, CellWidget> map = reverseCells();
         for (Cell c : field.cellsAdjacentToLetters(cell)) {
             map.get(c.position()).setEnabled(true);
@@ -155,7 +164,7 @@ public class FieldWidget extends JPanel {
 
         @Override
         public void letterIsReceived(PlayerActionEvent e) {
-            setEnabledButtonsAdjacentToLetters();
+            setEnabledActiveButtons(true);
         }
 
         @Override
@@ -163,12 +172,13 @@ public class FieldWidget extends JPanel {
             setEnabledButtons(false);
             setDefault();
             drawLettersOnField();
+            getNewActiveButtons();
         }
 
         @Override
         public void letterOnFieldIsChosen(PlayerActionEvent e) {
             setEnabledButtons(false);
-            setEnabledButtonsAdjacentToLetters(e.letter().cell());
+            setEnabledCellsAdjacentToLetters(e.letter().cell());
             e.letter().setChosen(true);
         }
 
@@ -176,6 +186,7 @@ public class FieldWidget extends JPanel {
         public void turnIsOver(PlayerActionEvent e) {
             setEnabledButtons(false);
             setDefault();
+            getNewActiveButtons();
         }
 
         @Override
@@ -215,6 +226,7 @@ public class FieldWidget extends JPanel {
         public void newGameStarted() {
             rebuildField();
             setEnabledButtons(false);
+            getNewActiveButtons();
         }
     }
 }

@@ -1,18 +1,26 @@
 package model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class ComplicatedAlphabet extends AbstractAlphabet{
+public class ComplicatedAlphabet{
+    protected ArrayList<Character> letters = new ArrayList<>(Arrays.asList(
+            'а', 'б', 'в', 'г', 'д',
+            'е', 'ё', 'ж', 'з', 'и',
+            'й', 'к', 'л', 'м', 'н',
+            'о', 'п', 'р', 'с', 'т',
+            'у', 'ф', 'х', 'ц', 'ч',
+            'ш', 'щ', 'ъ', 'ы', 'ь',
+            'э', 'ю', 'я'));
 
-    public List<Character> returnAvailableLetters(int count){
+    public List<Character> returnLetterList(){
+        return Collections.unmodifiableList(letters);
+    }
+
+    public List<Character> returnAvailableLetters(){
         ArrayList<Character> copy = (ArrayList<Character>) letters.clone();
-        if (count == -1)
-            return copy;
         Random random = new Random();
 
-        for (int i = 0; i < count; i++){
+        for (int i = 0; i < 10; i++){
             int index = random.nextInt(copy.size());
             copy.remove(index);
         }

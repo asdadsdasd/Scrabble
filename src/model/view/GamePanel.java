@@ -1,6 +1,7 @@
 package model.view;
 
 import model.entity.Alphabet;
+import model.entity.ComplicatedAlphabet;
 import model.entity.Dictionary;
 import model.entity.GameModel;
 import model.events.*;
@@ -31,6 +32,11 @@ public class GamePanel extends JFrame {
 
     private final String fieldSizes[] = new String[]{"5x5", "6x6", "7x7", "8x8"};
 
+    private final String difficultyLevels[] = new String[]{"Легко", "Поле", "Алфавит", "Поле и алфавит"};
+
+    private String selectedSize = null;
+    private String selectedDiff = null;
+
     private GameModel model = new GameModel();
 
     public GamePanel() {
@@ -57,7 +63,7 @@ public class GamePanel extends JFrame {
         JPanel centerPanel = new JPanel(new GridLayout(2, 1));
 
         // Создаем виджет, отображающий буквы алфавита
-        this.alphabetWidget = new AlphabetWidget(new Alphabet(), model, this);
+        this.alphabetWidget = new AlphabetWidget(new ComplicatedAlphabet(), model, this);
         alphabetWidget.buildLetterPanel();
 
         centerPanel.add(alphabetWidget);
@@ -142,18 +148,80 @@ public class GamePanel extends JFrame {
 
     private boolean applySettings() {
         HashMap<String, Integer> size = new HashMap<>();
-        size.put("5x5", 5);
-        size.put("6x6", 6);
-        size.put("7x7", 7);
-        size.put("8x8", 8);
-        String in = (String) JOptionPane.showInputDialog(null,
-                "Выберите разсер поля :",
-                "Размер поля",
-                JOptionPane.QUESTION_MESSAGE,
-                null, fieldSizes, fieldSizes[0]);
-        if (in != null) {
-            int heightAndWidth = size.get(in);
+        int index = 5;
+        for (String str : fieldSizes) {
+            size.put(str, index);
+            index++;
+        }
+
+        JDialog settingsDialog = new JDialog();
+        settingsDialog.setLayout(new GridLayout(3, 2));
+        settingsDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);  // This line makes the dialog modal
+
+        JLabel label1 = new JLabel("Размер поля: ");
+        JLabel label2 = new JLabel("Сложность: ");
+
+        JComboBox<String> comboBoxSize = new JComboBox<>(fieldSizes);
+        JComboBox<String> comboBoxDiff = new JComboBox<>(difficultyLevels);
+
+        JButton button1 = new JButton("Ок");
+        JButton button2 = new JButton("Отмена");
+
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectedSize = (String) comboBoxSize.getSelectedItem();
+                selectedDiff = (String) comboBoxDiff.getSelectedItem();
+
+                System.out.println(selectedSize);
+                System.out.println(selectedDiff);
+
+                settingsDialog.dispose();
+            }
+        });
+
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                settingsDialog.dispose();
+            }
+        });
+
+        settingsDialog.add(label1);
+        settingsDialog.add(comboBoxSize);
+        settingsDialog.add(label2);
+        settingsDialog.add(comboBoxDiff);
+        settingsDialog.add(button1);
+        settingsDialog.add(button2);
+
+        settingsDialog.pack();
+        settingsDialog.setResizable(false);
+        settingsDialog.setVisible(true);
+
+        // After closing the dialog, program execution continues here
+        if (selectedSize != null && selectedDiff != null) {
+            int heightAndWidth = size.get(selectedSize);
             model.field().setSize(heightAndWidth, heightAndWidth);
+            switch (selectedDiff){
+                case "Легко":
+                    alphabetWidget.setAlphabet(new Alphabet());
+                    model.field().setDiffLevel(1);
+                    break;
+                case "Поле":
+                    alphabetWidget.setAlphabet(new Alphabet());
+                    model.field().setDiffLevel(2);
+                    break;
+                case "Алфавит":
+                    alphabetWidget.setAlphabet(new ComplicatedAlphabet());
+                    model.field().setDiffLevel(1);
+                    break;
+                case "Поле и алфавит":
+                    alphabetWidget.setAlphabet(new ComplicatedAlphabet());
+                    model.field().setDiffLevel(2);
+            }
+            selectedSize = null;
+            selectedDiff = null;
+
             return true;
         }
         return false;

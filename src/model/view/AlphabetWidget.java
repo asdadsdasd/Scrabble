@@ -1,6 +1,5 @@
 package model.view;
 
-import model.entity.AbstractAlphabet;
 import model.entity.ComplicatedAlphabet;
 import model.entity.GameModel;
 import model.events.*;
@@ -9,21 +8,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class AlphabetWidget extends JPanel {
     private GameModel model;
 
-    private AbstractAlphabet alphabet;
+    private ComplicatedAlphabet alphabet;
 
     private ArrayList<JButton> buttonList = new ArrayList<>();
 
     private List<Character> activeLetters; //todo
 
-    public AlphabetWidget(AbstractAlphabet alphabet, GameModel model, GamePanel panel){
+    public AlphabetWidget(ComplicatedAlphabet alphabet, GameModel model, GamePanel panel){
         model.addGameListener(new GameObserver());
         model.addPlayerActionListener(new PlayerObserver());
         panel.addMenuListener(new MenuObserver());
@@ -33,9 +30,7 @@ public class AlphabetWidget extends JPanel {
 
     public void buildLetterPanel(){
         List<Character> letters;
-        if (alphabet.getClass() == ComplicatedAlphabet.class)
-            letters = ((ComplicatedAlphabet)alphabet).returnAvailableLetters(-1);
-        else letters = alphabet.returnAvailableLetters();
+        letters = alphabet.returnLetterList();
 
         setLayout(new FlowLayout());
         Dimension dimension = new Dimension(250, 220);
@@ -49,12 +44,30 @@ public class AlphabetWidget extends JPanel {
             btn.setEnabled(false);
             //btn.addActionListener(new GamePanel.ButtonClickListener()); //todo
         }
+        activeLetters = alphabet.returnAvailableLetters();
+    }
+
+    public void setAlphabet(ComplicatedAlphabet alphabet){
+        this.alphabet = alphabet;
     }
 
     private void setEnabledButtons(boolean flag){
+        for (Character ch : activeLetters){
+            for (JButton button : buttonList){
+                if(button.getText().equals(ch.toString()))
+                    button.setEnabled(flag);
+            }
+        }
+    }
+
+    private void setEnabledAllButtons(boolean flag){
         for (JButton button : buttonList){
             button.setEnabled(flag);
         }
+    }
+
+    private void getNewButtons(){
+        activeLetters = alphabet.returnAvailableLetters();
     }
 
     private class LetterClickListener implements ActionListener {
@@ -70,13 +83,14 @@ public class AlphabetWidget extends JPanel {
     private class PlayerObserver implements PlayerActionListener{
         @Override
         public void letterIsPlaced(PlayerActionEvent e) {
-            setEnabledButtons(false);
+            setEnabledAllButtons(false);
         }
         @Override
         public void letterIsReceived(PlayerActionEvent e) {}
 
         @Override
         public void turnIsSkipped(PlayerActionEvent e) {
+            getNewButtons();
             setEnabledButtons(true);
         }
         @Override
@@ -84,6 +98,7 @@ public class AlphabetWidget extends JPanel {
 
         @Override
         public void turnIsOver(PlayerActionEvent e) {
+            getNewButtons();
             setEnabledButtons(true);
         }
 
@@ -96,7 +111,7 @@ public class AlphabetWidget extends JPanel {
     private class GameObserver implements GameListener{
         @Override
         public void gameFinished(GameEvent e) {
-            setEnabledButtons(false);
+            setEnabledAllButtons(false);
         }
         @Override
         public void currentLetterIsChosen(GameEvent e) {}
@@ -109,6 +124,8 @@ public class AlphabetWidget extends JPanel {
     private class MenuObserver implements MenuListener{
         @Override
         public void newGameStarted() {
+            setEnabledAllButtons(false);
+            getNewButtons();
             setEnabledButtons(true);
         }
     }

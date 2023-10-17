@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class GameField {
 
@@ -31,8 +32,7 @@ public class GameField {
 
         // Связываем ячейку с полем
         cell.setField(this);
-        //cell.setPosition(pos);
-//todo
+
         // Добавляем новую ячейку
         cellList.add(cell);
     }
@@ -56,6 +56,16 @@ public class GameField {
         for(Cell c : cellList){
             if(c.isAdjacentToLetterCell())
                 cells.add(c);
+        }
+
+        if (diffLevel == 2 && cells.size() > 2){
+            int numberOfElementsToRemove = cells.size() / 3;
+
+            Random random = new Random();
+
+            for (int i = 0; i < numberOfElementsToRemove; i++){
+                cells.remove(random.nextInt(cells.size()));
+            }
         }
         return Collections.unmodifiableList(cells);
     }
@@ -83,6 +93,7 @@ public class GameField {
                 cells.add(c);
             }
         }
+
         return Collections.unmodifiableList(cells);
     }
 
@@ -119,6 +130,13 @@ public class GameField {
             letter.setCell(obj);
             letterList.add(letter);
         }
+    }
+
+    private int diffLevel = 2;
+
+    public void setDiffLevel(int level) {
+        if(level != 1 && level != 2) throw new RuntimeException("В поле передан неправильный уровень сложности!");
+        diffLevel = level;
     }
 
     // ----------------------- Ширина и высота поля ------------------------------
