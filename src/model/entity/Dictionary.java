@@ -38,7 +38,7 @@ public class Dictionary {
     public static void addWord(String word){
         FileWriter fw;
         try {
-            fw = new FileWriter("\\Users\\Reversi\\java_projects\\buysell\\scrabble\\src\\resources\\russian.txt", true);
+            fw = new FileWriter(".\\src\\resources\\russian.txt", true);
             fw.write("\n" + word);
             listOfWords.add(word);
             fw.close();
