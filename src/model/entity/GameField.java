@@ -70,7 +70,7 @@ public class GameField {
         return Collections.unmodifiableList(cells);
     }
 
-    public List<Cell> neighbours(Cell cell){
+    private List<Cell> neighbours(Cell cell){
         ArrayList<Cell> cells = new ArrayList<>();
         Point p = cell.position();
         if(cell(new Point(p.x + 1, p.y)) != null) {

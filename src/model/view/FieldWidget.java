@@ -16,7 +16,7 @@ public class FieldWidget extends JPanel {
 
     private GameField field;
 
-    private WidgetFactory factory;
+    private WidgetFactory factory = new WidgetFactory();
 
     private final Map<CellWidget, Point> cellWidgetMap = new HashMap<>();
 
@@ -24,13 +24,12 @@ public class FieldWidget extends JPanel {
 
     private final int FIELD_SIZE = 400;
 
-    public FieldWidget(GameField field, WidgetFactory factory, GameModel model, GamePanel panel) {
+    public FieldWidget(GameField field, GameModel model, GamePanel panel) {
         model.addPlayerActionListener(new PlayerObserver());
         model.addGameListener(new GameObserver());
         panel.addMenuListener(new MenuObserver());
         this.model = model;
         this.field = field;
-        this.factory = factory;
     }
 
     public void createField() {
@@ -179,7 +178,6 @@ public class FieldWidget extends JPanel {
         public void letterOnFieldIsChosen(PlayerActionEvent e) {
             setEnabledButtons(false);
             setEnabledCellsAdjacentToLetters(e.letter().cell());
-            e.letter().setChosen(true);
         }
 
         @Override

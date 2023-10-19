@@ -25,8 +25,6 @@ public class GamePanel extends JFrame {
 
     private  PlayerScoreWidget playerScoreWidget;
 
-    private WidgetFactory widgetFactory = new WidgetFactory();
-
     private JMenuBar menu;
     private final String fileItems[] = new String[]{"New", "Exit"};
 
@@ -55,7 +53,7 @@ public class GamePanel extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Создаем игровое поле
-        this.fieldWidget = new FieldWidget(model.field(), widgetFactory, model, this);
+        this.fieldWidget = new FieldWidget(model.field(), model, this);
         fieldWidget.createField();
         add(fieldWidget, BorderLayout.WEST);
 
@@ -156,7 +154,7 @@ public class GamePanel extends JFrame {
 
         JDialog settingsDialog = new JDialog();
         settingsDialog.setLayout(new GridLayout(3, 2));
-        settingsDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);  // This line makes the dialog modal
+        settingsDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 
         JLabel label1 = new JLabel("Размер поля: ");
         JLabel label2 = new JLabel("Сложность: ");

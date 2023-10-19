@@ -31,15 +31,14 @@ public class Letter {
     }
 
     //Была ли буква выбрана
-
-    private boolean haveChosen = false;
+    private boolean haveBeenChosen = false;
 
     public boolean isChosen() {
-        return haveChosen;
+        return haveBeenChosen;
     }
 
     public void setChosen(boolean haveChosen) {
-        this.haveChosen = haveChosen;
+        this.haveBeenChosen = haveChosen;
     }
 
     // Игрок, которому прнадлежит буква. Буква может быть нейтральной (не принадлежать никому) -

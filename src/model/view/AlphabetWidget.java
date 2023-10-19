@@ -18,7 +18,7 @@ public class AlphabetWidget extends JPanel {
 
     private ArrayList<JButton> buttonList = new ArrayList<>();
 
-    private List<Character> activeLetters; //todo
+    private List<Character> activeLetters;
 
     public AlphabetWidget(ComplicatedAlphabet alphabet, GameModel model, GamePanel panel){
         model.addGameListener(new GameObserver());
@@ -42,7 +42,6 @@ public class AlphabetWidget extends JPanel {
             btn.addActionListener(new LetterClickListener());
             buttonList.add(btn);
             btn.setEnabled(false);
-            //btn.addActionListener(new GamePanel.ButtonClickListener()); //todo
         }
         activeLetters = alphabet.returnAvailableLetters();
     }
