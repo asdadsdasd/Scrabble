@@ -19,6 +19,10 @@ public class GameModel {
         return this.field;
     }
 
+    private Alphabet alphabet = new Alphabet();
+
+    private Dictionary dictionary;
+
     // -------------------------------- Игроки -----------------------------------
     private ArrayList<Player> playerList = new ArrayList<>();
     private int activePlayer;
@@ -31,6 +35,7 @@ public class GameModel {
     public GameModel(){
         //Размеры поля по умолчанию
         field.setSize(8, 8);
+        dictionary = Dictionary.getDictionary();
 
         //Создание игроков
         Player p;
@@ -72,7 +77,6 @@ public class GameModel {
         exchangePlayer();
     }
 
-    private LetterFactory letterFactory = new LetterFactory();
     public void exchangePlayer(){
         activePlayer++;
         if(activePlayer >= playerList.size()) activePlayer = 0;
@@ -85,13 +89,13 @@ public class GameModel {
     }
 
     private void setMainWord() {
-        String word = Dictionary.getRandomWord(field().width());
+        String word = dictionary.getRandomWord(field().width());
         for (int i = 0; i < field().width(); i++){
-            field().setLetter(new Point(i, field().height()/2), letterFactory.createLetter(word.charAt(i)));
+            field().setLetter(new Point(i, field().height()/2), alphabet.createLetter(word.charAt(i)));
         }
     }
     public void setLetterToActivePlayer(char ch){
-        activePlayer().setActiveLetter(letterFactory.createLetter(ch));
+        activePlayer().setActiveLetter(alphabet.createLetter(ch));
     }
 
     private boolean isFieldFilled(){

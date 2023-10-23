@@ -26,4 +26,11 @@ public class ComplicatedAlphabet{
         }
         return copy;
     }
+
+    public Letter createLetter(char ch){
+        if (letters.contains(ch)){
+            return new Letter(ch);
+        }
+        return null;
+    }
 }
