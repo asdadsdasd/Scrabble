@@ -42,7 +42,9 @@ public class Player {
     }
 
     public void increaseScore(int points){
-        playerScore += points;
+        if(points > 0) {
+            playerScore += points;
+        }
     }
 
     // ---------------------- Слова, составленные игроком -----------------------
@@ -62,11 +64,13 @@ public class Player {
     private Letter letter;
 
     public void setActiveLetter(Letter l) {
-        this.letter = l;
-        l.setPlayer(this);
+        if (l != null) {
+            this.letter = l;
+            l.setPlayer(this);
 
-        // Генерируем событие
-        fireLetterIsReceived(this.letter);
+            // Генерируем событие
+            fireLetterIsReceived(this.letter);
+        }
     }
 
     public Letter activeLetter() {

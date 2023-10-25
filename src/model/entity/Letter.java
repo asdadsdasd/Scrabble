@@ -1,5 +1,7 @@
 package model.entity;
 
+import java.util.Objects;
+
 public class Letter {
 
     // --------------------- Буква -----------------------
@@ -51,5 +53,19 @@ public class Letter {
 
     public void unsetPlayer(){
         this.player = null;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Letter letter = (Letter) o;
+        return character == letter.character && haveBeenChosen == letter.haveBeenChosen && Objects.equals(cell, letter.cell) && Objects.equals(player, letter.player);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(character, cell, haveBeenChosen, player);
     }
 }

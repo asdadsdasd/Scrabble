@@ -132,7 +132,7 @@ public class GameField {
         }
     }
 
-    private int diffLevel = 2;
+    private int diffLevel = 1;
 
     public void setDiffLevel(int level) {
         if(level != 1 && level != 2) throw new RuntimeException("В поле передан неправильный уровень сложности!");

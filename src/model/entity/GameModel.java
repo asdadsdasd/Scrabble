@@ -34,7 +34,7 @@ public class GameModel {
 
     public GameModel(){
         //Размеры поля по умолчанию
-        field.setSize(8, 8);
+        field.setSize(5, 5);
         dictionary = Dictionary.getDictionary();
 
         //Создание игроков
