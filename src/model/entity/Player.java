@@ -29,6 +29,10 @@ public class Player {
     // ----------------------- Устанавливаем связь с полем -----------------------
     GameField field;
 
+    public void setField(GameField field) {
+        this.field = field;
+    }
+
     public Player (GameField field, String name, GameModel model) {
         model.addGameListener(new GameObserver());
         this.field = field;

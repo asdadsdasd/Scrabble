@@ -9,7 +9,7 @@ import java.util.Random;
 public class GameField {
 
     // ------------------------------ Клетки ---------------------------------------
-    private ArrayList<Cell> cellList = new ArrayList<>();
+    protected ArrayList<Cell> cellList = new ArrayList<>();
 
     public List<Cell> cells(){
         return Collections.unmodifiableList(cellList);
@@ -56,16 +56,6 @@ public class GameField {
         for(Cell c : cellList){
             if(c.isAdjacentToLetterCell())
                 cells.add(c);
-        }
-
-        if (diffLevel == 2 && cells.size() > 2){
-            int numberOfElementsToRemove = cells.size() / 3;
-
-            Random random = new Random();
-
-            for (int i = 0; i < numberOfElementsToRemove; i++){
-                cells.remove(random.nextInt(cells.size()));
-            }
         }
         return Collections.unmodifiableList(cells);
     }
@@ -132,12 +122,12 @@ public class GameField {
         }
     }
 
-    private int diffLevel = 1;
+/*    private int diffLevel = 1;
 
     public void setDiffLevel(int level) {
         if(level != 1 && level != 2) throw new RuntimeException("В поле передан неправильный уровень сложности!");
         diffLevel = level;
-    }
+    }*/
 
     // ----------------------- Ширина и высота поля ------------------------------
 

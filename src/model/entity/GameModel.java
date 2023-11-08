@@ -233,26 +233,29 @@ public class GameModel {
 
             if (e.selectedSize() != null && e.selectedDiff() != null) {
                 int heightAndWidth = size.get(e.selectedSize());
-                field().setSize(heightAndWidth, heightAndWidth);
+                switch (e.selectedDiff()){
+                    case "Легко":
+                        alphabet = new Alphabet();
+                        field = new GameField();
+                        break;
+                    case "Поле":
+                        alphabet = new Alphabet();
+                        field = new ComplicatedGameField();
+                        break;
+                    case "Алфавит":
+                        alphabet = new ComplicatedAlphabet();
+                        field = new GameField();
+                        break;
+                    case "Поле и алфавит":
+                        alphabet = new ComplicatedAlphabet();
+                        field = new ComplicatedGameField();
+                }
+                field.setSize(heightAndWidth, heightAndWidth);
+                for (Player p : playerList){
+                    p.setField(field);
+                }
+                startGame();
             } else { throw new IllegalArgumentException("Размер поля или сложность не заданы!"); }
-            switch (e.selectedDiff()){
-                case "Легко":
-                    alphabet = new Alphabet();
-                    field().setDiffLevel(1);
-                    break;
-                case "Поле":
-                    alphabet = new Alphabet();
-                    field().setDiffLevel(2);
-                    break;
-                case "Алфавит":
-                    alphabet = new ComplicatedAlphabet();
-                    field().setDiffLevel(1);
-                    break;
-                case "Поле и алфавит":
-                    alphabet = new ComplicatedAlphabet();
-                    field().setDiffLevel(2);
-            }
-            startGame();
         }
     }
 
