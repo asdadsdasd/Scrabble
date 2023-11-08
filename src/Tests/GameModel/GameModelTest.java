@@ -1,13 +1,14 @@
 package Tests.GameModel;
 
 import model.entity.*;
+import model.view.GamePanel;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class GameModelTest {
     @Test
     public void testExchangePlayer(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         Player notExpPlayer = model.activePlayer();
@@ -18,7 +19,7 @@ public class GameModelTest {
 
     @Test
     public void testSetLetterToActivePlayerHas(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         model.setLetterToActivePlayer('щ');
@@ -28,7 +29,7 @@ public class GameModelTest {
 
     @Test
     public void testSetLetterToActivePlayerHasNot(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         model.setLetterToActivePlayer('Q');

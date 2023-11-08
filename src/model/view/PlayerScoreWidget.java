@@ -82,7 +82,7 @@ public class PlayerScoreWidget extends JPanel {
 
     private class MenuObserver implements MenuListener {
         @Override
-        public void newGameStarted() {
+        public void newGameStarted(MenuEvent e) {
             firstPlayerScore = 0;
             secondPlayerScore = 0;
             firstPlayerLabel.setText("Счет первого игрока: " + firstPlayerScore);

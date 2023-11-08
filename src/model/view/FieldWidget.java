@@ -221,7 +221,8 @@ public class FieldWidget extends JPanel {
 
     private class MenuObserver implements MenuListener {
         @Override
-        public void newGameStarted() {
+        public void newGameStarted(MenuEvent e) {
+            field = model.field();
             rebuildField();
             setEnabledButtons(false);
             getNewActiveButtons();

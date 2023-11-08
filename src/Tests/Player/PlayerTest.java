@@ -1,6 +1,7 @@
 package Tests.Player;
 
 import model.entity.*;
+import model.view.GamePanel;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ import java.awt.*;
 public class PlayerTest {
     @Test
     public void testIncreaseScore(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         Player player = model.activePlayer();
@@ -21,7 +22,7 @@ public class PlayerTest {
 
     @Test
     public void testIncreaseScoreNothingHappened(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         Player player = model.activePlayer();
@@ -33,7 +34,7 @@ public class PlayerTest {
 
     @Test
     public void testAddWordToList(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         Player player = model.activePlayer();
@@ -47,7 +48,7 @@ public class PlayerTest {
 
     @Test
     public void testSetActiveLetter(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         Player player = model.activePlayer();
@@ -61,7 +62,7 @@ public class PlayerTest {
 
     @Test
     public void testSetLetterTo(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         Player player = model.activePlayer();
@@ -77,7 +78,7 @@ public class PlayerTest {
 
     @Test
     public void testChooseLetter(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         Player player = model.activePlayer();

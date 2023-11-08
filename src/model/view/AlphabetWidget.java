@@ -46,9 +46,9 @@ public class AlphabetWidget extends JPanel {
         activeLetters = alphabet.returnAvailableLetters();
     }
 
-    public void setAlphabet(ComplicatedAlphabet alphabet){
+/*    public void setAlphabet(ComplicatedAlphabet alphabet){
         this.alphabet = alphabet;
-    }
+    }*/
 
     private void setEnabledButtons(boolean flag){
         for (Character ch : activeLetters){
@@ -122,7 +122,8 @@ public class AlphabetWidget extends JPanel {
 
     private class MenuObserver implements MenuListener{
         @Override
-        public void newGameStarted() {
+        public void newGameStarted(MenuEvent e) {
+            alphabet = model.alphabet();
             setEnabledAllButtons(false);
             getNewButtons();
             setEnabledButtons(true);

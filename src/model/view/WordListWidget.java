@@ -88,7 +88,7 @@ public class WordListWidget extends JPanel {
 
     private class MenuObserver implements MenuListener {
         @Override
-        public void newGameStarted() {
+        public void newGameStarted(MenuEvent e) {
             firstPlayerList.clear();
             secondPlayerList.clear();
         }

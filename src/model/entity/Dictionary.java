@@ -11,7 +11,7 @@ public class Dictionary {
     private Dictionary() {
         FileReader fr;
         try {
-            fr = new FileReader("\\Users\\Reversi\\java_projects\\buysell\\scrabble\\src\\resources\\russian.txt");
+            fr = new FileReader(".\\src\\resources\\russian.txt");
             Scanner scanner = new Scanner(fr);
             while (scanner.hasNextLine()){
                 listOfWords.add(scanner.nextLine().toLowerCase());

@@ -35,11 +35,13 @@ public class GamePanel extends JFrame {
     private String selectedSize = null;
     private String selectedDiff = null;
 
-    private GameModel model = new GameModel();
+    private GameModel model;
 
     public GamePanel() {
         super();
         this.setTitle("Балда");
+
+        this.model = new GameModel(this);
 
         //Представление должно реагировать на изменение состояния модели
         model.addGameListener(new GameObserver());
@@ -124,10 +126,7 @@ public class GamePanel extends JFrame {
                 System.exit(0);
             }
             if ("new".equals(command)) {
-                if (applySettings()) {
-                    model.startGame();
-                    fireNewGameStarted();
-                }
+                applySettings();
             }
         }
     }
@@ -139,18 +138,16 @@ public class GamePanel extends JFrame {
     public void removeMenuListener(MenuListener l){ listeners.remove(l); }
 
     private void fireNewGameStarted(){
+        MenuEvent event = new MenuEvent(this);
+        event.setSelectedDiff(this.selectedDiff);
+        event.setSelectedSize(this.selectedSize);
+        event.setFieldSizes(this.fieldSizes);
         for (MenuListener l : listeners){
-            l.newGameStarted();
+            l.newGameStarted(event);
         }
     }
 
-    private boolean applySettings() {
-        HashMap<String, Integer> size = new HashMap<>();
-        int index = 5;
-        for (String str : fieldSizes) {
-            size.put(str, index);
-            index++;
-        }
+    private void applySettings() {
 
         JDialog settingsDialog = new JDialog();
         settingsDialog.setLayout(new GridLayout(3, 2));
@@ -196,33 +193,11 @@ public class GamePanel extends JFrame {
         settingsDialog.setResizable(false);
         settingsDialog.setVisible(true);
 
-        // After closing the dialog, program execution continues here
-        if (selectedSize != null && selectedDiff != null) {
-            int heightAndWidth = size.get(selectedSize);
-            model.field().setSize(heightAndWidth, heightAndWidth);
-            switch (selectedDiff){
-                case "Легко":
-                    alphabetWidget.setAlphabet(new Alphabet());
-                    model.field().setDiffLevel(1);
-                    break;
-                case "Поле":
-                    alphabetWidget.setAlphabet(new Alphabet());
-                    model.field().setDiffLevel(2);
-                    break;
-                case "Алфавит":
-                    alphabetWidget.setAlphabet(new ComplicatedAlphabet());
-                    model.field().setDiffLevel(1);
-                    break;
-                case "Поле и алфавит":
-                    alphabetWidget.setAlphabet(new ComplicatedAlphabet());
-                    model.field().setDiffLevel(2);
-            }
+        if(selectedDiff != null && selectedSize != null) {
+            fireNewGameStarted();
             selectedSize = null;
             selectedDiff = null;
-
-            return true;
         }
-        return false;
     }
 
     // ------------------------- Реагируем на изменения модели ----------------------

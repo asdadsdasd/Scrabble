@@ -1,6 +1,7 @@
 package Tests.GameField;
 
 import model.entity.*;
+import model.view.GamePanel;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ import java.util.HashSet;
 public class GameFieldTest {
     @Test
     public void testCell(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();
@@ -23,7 +24,7 @@ public class GameFieldTest {
 
     @Test
     public void testCellsAdjacentToLetters(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();
@@ -39,7 +40,7 @@ public class GameFieldTest {
 
     @Test
     public void testCellsAdjacentToLettersNull(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();
@@ -49,7 +50,7 @@ public class GameFieldTest {
 
     @Test
     public void testCellsAdjacentToLettersNotNull(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();
@@ -59,7 +60,7 @@ public class GameFieldTest {
 
     @Test
     public void testLetterNull(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();
@@ -69,7 +70,7 @@ public class GameFieldTest {
 
     @Test
     public void testLetterNotNull(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();
@@ -79,7 +80,7 @@ public class GameFieldTest {
 
     @Test
     public void testContainsRangeTrue(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();
@@ -89,7 +90,7 @@ public class GameFieldTest {
 
     @Test
     public void testContainsRangeFalse(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();
@@ -99,7 +100,7 @@ public class GameFieldTest {
 
     @Test
     public void testLetters(){
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(new GamePanel());
         model.startGame();
 
         GameField field = model.field();

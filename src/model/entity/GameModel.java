@@ -1,14 +1,12 @@
 package model.entity;
 
-import model.events.GameEvent;
-import model.events.GameListener;
-import model.events.PlayerActionEvent;
-import model.events.PlayerActionListener;
+import model.events.*;
 import model.factory.CellFactory;
-import model.factory.LetterFactory;
+import model.view.GamePanel;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GameModel {
 
@@ -19,7 +17,11 @@ public class GameModel {
         return this.field;
     }
 
-    private Alphabet alphabet = new Alphabet();
+    private ComplicatedAlphabet alphabet = new Alphabet();
+
+    public ComplicatedAlphabet alphabet() {
+        return this.alphabet;
+    }
 
     private Dictionary dictionary;
 
@@ -32,7 +34,10 @@ public class GameModel {
         return playerList.get(activePlayer);
     }
 
-    public GameModel(){
+    public GameModel(GamePanel panel){
+        //Добавляем слушателя меню
+        panel.addMenuListener(new MenuObserver());
+
         //Размеры поля по умолчанию
         field.setSize(5, 5);
         dictionary = Dictionary.getDictionary();
@@ -213,6 +218,41 @@ public class GameModel {
             l.unsetPlayer();
             fireCancel(e);
             field.setLettersNotChosen();
+        }
+    }
+
+    private class MenuObserver implements MenuListener{
+        @Override
+        public void newGameStarted(MenuEvent e) {
+            HashMap<String, Integer> size = new HashMap<>();
+            int index = 5;
+            for (String str : e.fieldSizes()) {
+                size.put(str, index);
+                index++;
+            }
+
+            if (e.selectedSize() != null && e.selectedDiff() != null) {
+                int heightAndWidth = size.get(e.selectedSize());
+                field().setSize(heightAndWidth, heightAndWidth);
+            } else { throw new IllegalArgumentException("Размер поля или сложность не заданы!"); }
+            switch (e.selectedDiff()){
+                case "Легко":
+                    alphabet = new Alphabet();
+                    field().setDiffLevel(1);
+                    break;
+                case "Поле":
+                    alphabet = new Alphabet();
+                    field().setDiffLevel(2);
+                    break;
+                case "Алфавит":
+                    alphabet = new ComplicatedAlphabet();
+                    field().setDiffLevel(1);
+                    break;
+                case "Поле и алфавит":
+                    alphabet = new ComplicatedAlphabet();
+                    field().setDiffLevel(2);
+            }
+            startGame();
         }
     }
 

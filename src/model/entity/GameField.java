@@ -112,7 +112,7 @@ public class GameField {
         for (Cell c : cellList){
             Letter l = c.letter();
             if (l != null)
-            letterList.add(c.letter());
+                letterList.add(c.letter());
         }
         return Collections.unmodifiableList(letterList);
     }
